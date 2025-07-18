@@ -1,10 +1,13 @@
-void main() {
-        char* video = (char*)0xb8000;
-        const char* msg = "Kernel control";
-        for (int i = 0;msg[i];i++) {
+void print(const char* msg) {
+        for (int i = 0; msg[i]; i++) {
+                char* video = (char*)0xB8000;
                 video[i * 2] = msg[i];
                 video[i * 2 + 1] = 0x0F;
         }
+}
 
-        while (1) {}
+void main() {
+        print("Kernel succefull loaded!");
+
+        while (1);
 }
