@@ -10,9 +10,9 @@ $(TARGET): ./build ./build/boot.bin ./build/kernel.bin
 ./build:
 	mkdir -p ./build
 
-./build/kernel.bin: ./kernel/kernel.s
-	as --32 ./kernel/kernel.s -o ./build/kernel.o
-	ld -m elf_i386 -Ttext 0x1000 --oformat binary ./build/kernel.o -o ./build/kernel.bin
+./build/kernel.bin: ./kernel/kernel.c
+	gcc -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -c ./kernel/kernel.c -o ./build/kernel.o
+	ld -m elf_i386 -T ./kernel/linker.ld -nostdlib --oformat binary ./build/kernel.o -o ./build/kernel.bin
 
 ./build/boot.bin: ./kernel/boot.s
 		as --32 ./kernel/boot.s -o ./build/boot.o
