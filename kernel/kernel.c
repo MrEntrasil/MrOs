@@ -1,8 +1,6 @@
 void main() {
-        asm volatile (
-                "movb $'X', %al \n"
-                "movb $0x0E, %ah \n"
-                "int $0x10"
-        );
+        char* vga = (char*)0xB8000;
+        vga[0] = 'F';
+        vga[1] = 0x0F;
         while (1);
 }

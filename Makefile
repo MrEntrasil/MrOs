@@ -19,4 +19,4 @@ $(TARGET): ./build ./build/boot.bin ./build/kernel.bin
 		ld -m elf_i386 -Ttext 0x7C00 --oformat binary ./build/boot.o -o ./build/boot.bin
 
 clean:
-	rm -rf ./build/boot.bin ./build/kernel.bin $(TARGET)
+	rm -rf ./build/boot.bin ./build/kernel.bin ./build/gdt.o ./build/boot.o ./build/kernel.o ./build/boot.elf $(TARGET)
