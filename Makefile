@@ -1,4 +1,7 @@
-TARGET=mros.img
+TARGET = mros.img
+CC     = gcc
+ASM    = as
+CFLAGS = -m32 -ffreestanding -nostdlib -fno-pic -fno-pie
 
 all: $(TARGET)
 
@@ -10,13 +13,18 @@ $(TARGET): ./build ./build/boot.bin ./build/kernel.bin
 ./build:
 	mkdir -p ./build
 
-./build/kernel.bin: ./kernel/kernel.c
-	gcc -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -c ./kernel/kernel.c -o ./build/kernel.o
-	ld -m elf_i386 -T ./kernel/linker.ld -nostdlib --oformat binary ./build/kernel.o -o ./build/kernel.bin
+./build/kernel.bin: ./build/kernel.o ./build/task.o
+	ld -m elf_i386 -T ./kernel/linker.ld -nostdlib --oformat binary ./build/kernel.o ./build/task.o -o ./build/kernel.bin
+
+./build/kernel.o: ./kernel/kernel.c
+		$(CC) $(CFLAGS) -c ./kernel/kernel.c -o ./build/kernel.o
+
+./build/task.o: ./kernel/task.c
+		$(CC) $(CFLAGS) -c ./kernel/task.c -o ./build/task.o
 
 ./build/boot.bin: ./kernel/boot.s
 		as --32 ./kernel/boot.s -o ./build/boot.o
 		ld -m elf_i386 -Ttext 0x7C00 --oformat binary ./build/boot.o -o ./build/boot.bin
 
 clean:
-	rm -rf ./build/boot.bin ./build/kernel.bin ./build/gdt.o ./build/boot.o ./build/kernel.o ./build/boot.elf $(TARGET)
+	rm -rf ./build/* $(TARGET)
